@@ -1,31 +1,67 @@
-import React from 'react'
+import React, { useState, useEffect } from 'react';
 import Poll from '../../../components/Poll';
 import Typography from '@mui/material/Typography';
 import IconButton from '@mui/material/IconButton';
 import { RiArrowLeftSLine } from 'react-icons/ri';
-import {AiOutlinePlusCircle} from 'react-icons/ai';
-import { useContext,createContext,useState } from 'react';
-const PollListContext=createContext([]);
-function Poll_list() {
-    //const [polls, setPolls] = useState([{"name":"Polling","place":"Polling","start_date":"2020-01-01","end_date":"2020-01-01","status":"Active"},{"name":"Polling","place":"Polling","start_date":"2020-01-01","end_date":"2020-01-01","status":"Active"}]);
-  return (<>
-    <div className='section-header-primary flex justify-between items-center mb-1'>
-      <div className='flex items-center'>
-				<IconButton className='p-0 mr-4'>
-					<RiArrowLeftSLine color='white' fontSize='2rem' />
-				</IconButton>
-				<Typography variant='h4' fontSize='28px' className='translate-y-[4px]'>
-				Polling List
-				</Typography>
-      </div>
-      <a href='polls/create'><button className='flex justify-between items-center mr-4'>
-        <AiOutlinePlusCircle className='h-8 w-8 mr-2'></AiOutlinePlusCircle>
-       <span>Create New Poll</span></button></a>
+import { AiOutlinePlusCircle } from 'react-icons/ai';
 
-		</div>
-        <Poll></Poll>
-        <Poll></Poll>
+import { Link } from 'react-router-dom';
+import { connect } from 'react-redux';
 
-    </>)}
+function Poll_list({ contract, walletAddress }) {
+	const [pollList, setPollList] = useState([]);
 
-export default Poll_list
+	useEffect(() => {
+		const getPreviousPolls = async () => {
+			try {
+				const previousPolls = await contract.methods
+					.getPreviousPolls()
+					.call({ from: walletAddress });
+
+				setPollList(previousPolls);
+			} catch (err) {
+				console.error(err);
+			}
+		};
+
+		getPreviousPolls();
+		// eslint-disable-next-line react-hooks/exhaustive-deps
+	}, []);
+
+	return (
+		<>
+			<div className='section-header-primary flex justify-between items-center mb-1'>
+				<div className='flex items-center'>
+					<IconButton className='p-0 mr-4'>
+						<RiArrowLeftSLine color='white' fontSize='2rem' />
+					</IconButton>
+					<Typography variant='h4' fontSize='28px' className='translate-y-[4px]'>
+						Polling List
+					</Typography>
+				</div>
+				<Link to='create'>
+					<button className='flex justify-between items-center mr-4'>
+						<AiOutlinePlusCircle className='h-8 w-8 mr-2'></AiOutlinePlusCircle>
+						<span>Create New Poll</span>
+					</button>
+				</Link>
+			</div>
+			{pollList.map((e) => (
+				<Poll />
+			))}
+		</>
+	);
+}
+
+const mapStateToProps = ({ auth }) => {
+	return {
+		contract: auth.contract,
+		walletAddress: auth.walletAddress,
+	};
+};
+
+const mapDispatchToProps = (dispatch) => {
+	return {};
+};
+
+export default connect(mapStateToProps, mapDispatchToProps)(Poll_list);
