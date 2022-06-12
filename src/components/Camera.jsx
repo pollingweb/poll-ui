@@ -1,7 +1,9 @@
-import { useRef, useState, useCallback } from 'react';
 import Webcam from 'react-webcam';
 import styled from 'styled-components';
+import { useRef, useState, useCallback } from 'react';
 import profile_pic from '../images/default-profile.jpg';
+import axios from 'axios'
+
 
 const Container = styled.div`
     width : 100vw;
@@ -21,6 +23,7 @@ const Button = styled.button`
     cursor : pointer;
     border : 3px solid transparent;
     margin : 50px auto;
+    background-color: #fdf4f4;
 
     &:hover {
         background-color : #d8cfcf;
@@ -43,13 +46,21 @@ const NestedDiv = styled.div`
 `
 
 const Camera = (props) => {
-
     const [img, setImg] = useState('');
     const webcamRef = useRef(null);
     const capture = useCallback(
-        () => {
-            const imageSrc = webcamRef.current.getScreenshot();
-            setImg(imageSrc);
+        async () => {
+            const imageSrc = await webcamRef.current.getScreenshot();
+
+            const formData = new FormData();
+            formData.append("field-name", imageSrc);
+
+            const obj = await axios.post(process.env.REACT_APP_API_BASEURL+'/api/upload', formData)
+
+            console.log(obj)
+
+            
+            // setImg(imageSrc);
         },
         [webcamRef]
     );
