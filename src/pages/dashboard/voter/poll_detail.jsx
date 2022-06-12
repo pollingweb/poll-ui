@@ -1,0 +1,19 @@
+import React from 'react'
+import Typography from '@mui/material/Typography';
+import Button from '@mui/material/Button';
+import IconButton from '@mui/material/IconButton';
+import { RiArrowLeftSLine } from 'react-icons/ri';
+function poll_detail() {
+  return (
+    <div><div className='section-header-primary flex'>
+    <IconButton className='p-0 mr-4'>
+      <RiArrowLeftSLine color='white' fontSize='2rem' />
+    </IconButton>
+    <Typography variant='h4' fontSize='32px' className='translate-y-[4px]'>
+      Candidate - Detail
+    </Typography>
+  </div></div>
+  )
+}
+
+export default poll_detail
