@@ -3,6 +3,7 @@ import Typography from '@mui/material/Typography';
 import Button from '@mui/material/Button';
 import IconButton from '@mui/material/IconButton';
 import { RiArrowLeftSLine } from 'react-icons/ri';
+import CandidateModal from '../../../components/CandidateModal';
 function poll_detail() {
   return (
     <div><div className='section-header-primary flex'>
@@ -12,7 +13,9 @@ function poll_detail() {
     <Typography variant='h4' fontSize='32px' className='translate-y-[4px]'>
       Candidate - Detail
     </Typography>
-  </div></div>
+  </div>
+  <CandidateModal/>
+  </div>
   )
 }
 

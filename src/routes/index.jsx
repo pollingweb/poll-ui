@@ -44,7 +44,7 @@ function WebRoutes() {
 				<Route path='/sign-up' element={<SignUp />} />
 
 				<Route path='dashboard/voter' element={<Layouts />}>
-					<Route index element={<VDashboardHome />} />
+					{/* <Route index element={<VDashboardHome />} /> */}
 					<Route path='candidate-details' element={<VCandidateDetails />} />
 					<Route path='polls' element={<VPollList />} />
 					<Route path='polls/:pollId' element={<VDashboardHome />} />

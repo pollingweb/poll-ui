@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 
+import { useParams } from 'react-router-dom';
 import Typography from '@mui/material/Typography';
 import Button from '@mui/material/Button';
 import { connect } from 'react-redux';
@@ -9,6 +10,8 @@ import axios from 'axios';
 
 function Home({ web3, walletAddress, contract }) {
 	const [polldetails, setpolldetails] = useState({});
+	const [candidateDetails, setcandidateDetails] = useState({});
+	let { pollId} = useParams();
 
 	// const getPollName = async (address) => {
 	// 	const contract = new web3.eth.Contract(PollContract.abi, address);
@@ -52,8 +55,9 @@ function Home({ web3, walletAddress, contract }) {
 
 	useEffect(() => {
 		async function getPollDetails() {
+			const candidateDetails=await axios.get(`${process.env.REACT_APP_API_URL ||"http://localhost:4000"}/api/voter/${walletAddress}`);
 			const pollDetails = await axios.get(
-				`${process.env.REACT_APP_API_BASEURL}/api/poll/${walletAddress}`
+				`${process.env.REACT_APP_API_BASEURL||"http://localhost:4000"}/api/poll/${pollId}`
 			);
 
 			if (pollDetails.status === 200) {
@@ -105,7 +109,7 @@ function Home({ web3, walletAddress, contract }) {
 						Poll Name
 					</Typography>
 					<Typography variant='h6' className='flex-1'>
-						{polldetails.name}
+						{polldetails?.name}
 					</Typography>
 				</div>
 				<div className='flex w-100'>
@@ -121,7 +125,7 @@ function Home({ web3, walletAddress, contract }) {
 						Poll Type
 					</Typography>
 					<Typography variant='h6' className='flex-1'>
-						{polldetails.pollType}
+						{polldetails?.pollType}
 					</Typography>
 				</div>
 				<div className='flex w-100'>
@@ -129,7 +133,7 @@ function Home({ web3, walletAddress, contract }) {
 						Poll Start Time
 					</Typography>
 					<Typography variant='h6' className='flex-1'>
-						{polldetails.startDate}
+						{polldetails?.startDate}
 					</Typography>
 				</div>
 				<div className='flex w-100'>
@@ -137,14 +141,14 @@ function Home({ web3, walletAddress, contract }) {
 						Poll End Time
 					</Typography>
 					<Typography variant='h6' className='flex-1'>
-						{polldetails.endDate}
+						{polldetails?.endDate}
 					</Typography>
 				</div>
 			</div>
 			<div className='text-center mb-4'>
-				<Button variant='contained' color='primary'>
+				{!candidateDetails.verified && <Button variant='contained' color='primary'>
 					Apply
-				</Button>
+				</Button>}
 			</div>
 
 			<div className='section-header-primary'>
@@ -153,7 +157,7 @@ function Home({ web3, walletAddress, contract }) {
 				</Typography>
 			</div>
 			<div>
-				{polldetails.Candidates?.map((data) => (
+				{polldetails?.Candidates?.map((data) => (
 					<div className='flex my-4 ml-[24px]' key={data.id}>
 						<div className='flex-1'>
 							<div className='list-icon-primary inline-flex'>SD</div>
@@ -165,9 +169,11 @@ function Home({ web3, walletAddress, contract }) {
 							<Button variant='contained' color='primary' size='small'>
 								See Full Profile
 							</Button>
-							<Button variant='contained' color='primary' size='small'>
+							{candidateDetails.verified &&
+							<Button variant='contained' color='primary' size='small' onClick={()=>voteFor(polldetails.id,data.id)}>
 								Click to Vote
 							</Button>
+	}
 						</div>
 					</div>
 				))}

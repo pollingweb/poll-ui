@@ -1,4 +1,5 @@
 import React, { useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { useState } from 'react';
 import Typography from '@mui/material/Typography';
 // import Button from "@mui/material/Button";
@@ -22,6 +23,7 @@ import { handleMetamaskTransaction } from '../../../utils/eth';
 // import axios from "axios";
 
 function NewPoll({ web3, walletAddress, contract }) {
+	const navigate=useNavigate();
 	const [poll, setPoll] = useState({
 		pollId: '',
 		name: '',
@@ -175,7 +177,7 @@ function NewPoll({ web3, walletAddress, contract }) {
 					id: uuidv4(),
 					name: candidateList[i].name,
 					PollId: pollId,
-					imageUrl: '',
+					imageUrl: 'www.google.com',
 					voteCount: 0,
 					description: candidateList[i].description,
 				});
@@ -191,6 +193,7 @@ function NewPoll({ web3, walletAddress, contract }) {
 					PollId: pollId,
 				});
 			}
+			navigate(-1,{replace:true});
 		} catch (error) {}
 
 		setloading(false);
@@ -198,6 +201,8 @@ function NewPoll({ web3, walletAddress, contract }) {
 
 	const createPoll = async () => {
 		setloading(true);
+		updatePollToDb('0x55DE57dce5f1b6076f670b606D5BF24a339f6471');
+		return;
 		const endTime = new Date(poll.endTime).getTime() / 1000;
 		const startTime = Date.now() / 1000;
 		const blockNumber = Math.ceil((endTime - startTime) / 17);
@@ -227,7 +232,7 @@ function NewPoll({ web3, walletAddress, contract }) {
 							.call({ from: walletAddress });
 
 						if (previousPolls.length === pollList.length + 1) {
-							updatePollToDb();
+							updatePollToDb(previousPolls[previousPolls.length - 1]);
 							clearInterval(timer);
 						}
 					} catch (err) {
