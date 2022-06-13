@@ -14,12 +14,7 @@ import axios from 'axios';
 
 function Poll_detail({ web3, contract, walletAddress }) {
 	const { pollId } = useParams();
-	const [polldetails, setpolldetails] = useState({
-		pollName: '',
-		pollType: '',
-		startBlock: '',
-		endBlock: '',
-	});
+	const [polldetails, setpolldetails] = useState({});
 
 	const [result, setResult] = useState({});
 
@@ -205,7 +200,7 @@ function Poll_detail({ web3, contract, walletAddress }) {
 			<div className='section-header-primary flex items-center justify-between'>
 				<div>
 					<Typography variant='h4' fontSize='28px'>
-						Polling-1 Detail
+						Polling Detail
 					</Typography>
 				</div>
 				<div>
