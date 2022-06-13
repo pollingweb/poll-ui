@@ -1,11 +1,12 @@
 import React from 'react';
 import { IoIosArrowDropright } from 'react-icons/io';
-import { AiOutlinePlusCircle } from 'react-icons/ai';
+
 import Typography from '@mui/material/Typography';
-import IconButton from '@mui/material/IconButton';
-import Button from '@mui/material/Button';
-import { RiArrowLeftSLine } from 'react-icons/ri';
-function Poll() {
+
+import { Link } from 'react-router-dom';
+
+function Poll({ data }) {
+	console.log(data);
 	return (
 		<div>
 			<div className='flex justify-between px-6 border items-center py-[1px]'>
@@ -31,7 +32,9 @@ function Poll() {
 					<Typography variant='h6'>Status</Typography>
 				</button>
 				<div>
-					<IoIosArrowDropright className='h-7 w-7'></IoIosArrowDropright>
+					<Link to={data}>
+						<IoIosArrowDropright className='h-7 w-7'></IoIosArrowDropright>
+					</Link>
 				</div>
 			</div>
 		</div>

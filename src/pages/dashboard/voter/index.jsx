@@ -1,9 +1,98 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 
 import Typography from '@mui/material/Typography';
 import Button from '@mui/material/Button';
+import { connect } from 'react-redux';
+import PollContract from '../../../smart-contract/contracts/artifacts/Poll.json';
+import { handleMetamaskTransaction } from '../../../utils/eth';
 
-export default function Home() {
+function Home({ web3, walletAddress, contract }) {
+	const getPollName = async (address) => {
+		const contract = new web3.eth.Contract(PollContract.abi, address);
+		try {
+			const pollName = await contract.methods.pollName().call({ from: walletAddress });
+			console.log(pollName);
+		} catch (err) {
+			console.error(err);
+		}
+	};
+
+	const getPollType = async (address) => {
+		const contract = new web3.eth.Contract(PollContract.abi, address);
+		try {
+			const pollType = await contract.methods.getPollType().call({ from: walletAddress });
+			console.log(pollType);
+		} catch (err) {
+			console.error(err);
+		}
+	};
+
+	const getEndBlock = async (address) => {
+		const contract = new web3.eth.Contract(PollContract.abi, address);
+		try {
+			const endBlock = await contract.methods.endBlock().call({ from: walletAddress });
+			console.log(endBlock);
+		} catch (err) {
+			console.error(err);
+		}
+	};
+
+	const getStartBlock = async (address) => {
+		const contract = new web3.eth.Contract(PollContract.abi, address);
+		try {
+			const startBlock = await contract.methods.startBlock().call({ from: walletAddress });
+			console.log(startBlock);
+		} catch (err) {
+			console.error(err);
+		}
+	};
+
+	const getResultOf = async (to, candidateID) => {
+		const contract = new web3.eth.Contract(PollContract.abi, to);
+		try {
+			const resultOf = await contract.methods
+				.getResultOf(candidateID)
+				.call({ from: walletAddress });
+			console.log(resultOf);
+		} catch (err) {
+			console.error(err);
+		}
+	};
+
+	useEffect(() => {
+		getPollName('id');
+		getPollType('id');
+		getEndBlock('id');
+		getStartBlock('id');
+		getResultOf('a', 's');
+	}, []);
+
+	const voteFor = async (to, candidateID) => {
+		const contract = new web3.eth.Contract(PollContract.abi, to);
+
+		try {
+			const tx = contract.methods.voteFor(candidateID);
+			const gas = await tx.estimateGas({ from: walletAddress });
+			const gasPrice = await web3.eth.getGasPrice();
+			const data = tx.encodeABI();
+			const nonce = await web3.eth.getTransactionCount(walletAddress);
+
+			const transactionID = await handleMetamaskTransaction({
+				web3,
+				walletAddress,
+				nonce,
+				to,
+				gasPrice,
+				gas,
+				data,
+			});
+
+			console.log(transactionID);
+		} catch (err) {
+			console.error(err);
+		}
+	};
+
 	return (
 		<div>
 			<div className='section-header-primary'>
@@ -133,3 +222,17 @@ export default function Home() {
 		</div>
 	);
 }
+
+const mapStateToProps = ({ auth }) => {
+	return {
+		web3: auth.web3,
+		walletAddress: auth.walletAddress,
+		contract: auth.contract,
+	};
+};
+
+// const mapDispatchToProps = (dispatch) => {
+// 	return {};
+// };
+
+export default connect(mapStateToProps)(Home);

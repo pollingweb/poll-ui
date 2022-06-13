@@ -7,9 +7,11 @@ import { AiOutlinePlusCircle } from 'react-icons/ai';
 
 import { Link } from 'react-router-dom';
 import { connect } from 'react-redux';
+import axios from 'axios';
 
 function Poll_list({ contract, walletAddress }) {
 	const [pollList, setPollList] = useState([]);
+	const [pollListDetails, setpollListDetails] = useState([]);
 
 	useEffect(() => {
 		const getPreviousPolls = async () => {
@@ -19,6 +21,14 @@ function Poll_list({ contract, walletAddress }) {
 					.call({ from: walletAddress });
 
 				setPollList(previousPolls);
+
+				previousPolls.map(async (item) => {
+					const pollDetails = await axios.get(
+						`${process.env.REACT_APP_API_BASEURL}/api/poll/${item}`
+					);
+
+					setpollListDetails((prev) => [...prev, pollDetails.data]);
+				});
 			} catch (err) {
 				console.error(err);
 			}
@@ -47,7 +57,7 @@ function Poll_list({ contract, walletAddress }) {
 				</Link>
 			</div>
 			{pollList.map((e) => (
-				<Poll />
+				<Poll data={e} />
 			))}
 		</>
 	);
