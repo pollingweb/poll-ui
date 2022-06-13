@@ -81,6 +81,7 @@ function NewPoll({ web3, walletAddress, contract }) {
 					.call({ from: walletAddress });
 
 				setPollList(previousPolls);
+				console.log(previousPolls);
 			} catch (err) {
 				console.error(err);
 			}
@@ -98,6 +99,14 @@ function NewPoll({ web3, walletAddress, contract }) {
 	const addCandidate = async () => {
 		setCandidateList([...candidateList, newCandidate]);
 		setOpenCandidateForm(false);
+		setNewCandidate({
+			pollId: '',
+			name: '',
+			description: '',
+			img_url: '',
+			candidate_id: '',
+			img: null,
+		});
 	};
 
 	const removeCandidate = (candidate_id) => {
@@ -191,7 +200,7 @@ function NewPoll({ web3, walletAddress, contract }) {
 		setloading(true);
 		const endTime = new Date(poll.endTime).getTime() / 1000;
 		const startTime = Date.now() / 1000;
-		const blockNumber = (endTime - startTime) / 17;
+		const blockNumber = Math.ceil((endTime - startTime) / 17);
 		const candidateIds = candidateList.map((e) => e.pollId);
 
 		try {
@@ -200,9 +209,9 @@ function NewPoll({ web3, walletAddress, contract }) {
 			const gasPrice = await web3.eth.getGasPrice();
 			const data = tx.encodeABI();
 			const nonce = await web3.eth.getTransactionCount(walletAddress);
-
 			const transactionID = await handleMetamaskTransaction({
 				web3,
+				walletAddress,
 				nonce,
 				to: '0xe07eB21048a121fA55B6d9ED9715164958d8Bd6D',
 				gasPrice,
