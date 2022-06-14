@@ -27,9 +27,9 @@ const OCandidateDetails = lazy(() =>
 		/* webpackChunkName: "CandidateDetails" */ '../pages/dashboard/organizer/candidate-details'
 	)
 );
-const VOrganizerPollDetail = lazy(() =>
-	import(/* webpackChunkName: "OrganizerPollDetail" */ '../pages/dashboard/voter/poll_detail')
-);
+// const VOrganizerPollDetail = lazy(() =>
+// 	import(/* webpackChunkName: "OrganizerPollDetail" */ '../pages/dashboard/voter/poll_detail')
+// );
 const OOrganizerPollDetail = lazy(() =>
 	import(/* webpackChunkName: "OrganizerPollDetail" */ '../pages/dashboard/organizer/poll_detail')
 );

@@ -10,5 +10,5 @@ export const Container = styled.div`
 `;
 
 export default function Header() {
-	return <Container>Notifications</Container>;
+	return <Container></Container>;
 }

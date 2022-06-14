@@ -13,13 +13,13 @@ const web3 = new Web3('https://rinkeby.infura.io/v3/2c6b7e477a774f919361c4f491d4
 
 function PreSignUp({ setLogin, updateLogin }) {
 	const navigate = useNavigate();
-	const [loading, setLoading] = React.useState(true);
-	const [pollId, setPollId] = React.useState('');
+	// const [loading, setLoading] = React.useState(true);
+	// const [pollId, setPollId] = React.useState('');
 	const [open, setOpen] = React.useState(false);
 
-	const handleOpen = () => {
-		setOpen(true);
-	};
+	// const handleOpen = () => {
+	// 	setOpen(true);
+	// };
 
 	const handleClose = () => {
 		setOpen(false);
@@ -47,17 +47,19 @@ function PreSignUp({ setLogin, updateLogin }) {
 
 	return (
 		<>
-			<div>preSignUp</div>
-			<div
-				className='flex items-center rounded-xl bg-[#1c4f46] w-64 py-1 px-3'
-				onClick={() => metaMaskConnect()}
-			>
-				<img
-					src='../assets/images/MetaMask.png'
-					className='h-10 w-16 rounded-full'
-					alt=''
-				/>
-				<span className='text-white ml-3'> Connect Metamask</span>
+			<div className='w-full mt-20 flex flex-col justify-center items-center'>
+				<h1 className='text-2xl mb-4'>Welcome to Poll.io</h1>
+				<div
+					className='flex items-center rounded-xl bg-[#1c4f46] w-64 py-1 px-3'
+					onClick={() => metaMaskConnect()}
+				>
+					<img
+						src='/assets/images/MetaMask.svg'
+						className='h-10 w-16 rounded-full'
+						alt=''
+					/>
+					<span className='text-white ml-3'> Connect Metamask</span>
+				</div>
 			</div>
 			<Modal
 				open={open}
@@ -74,7 +76,7 @@ function PreSignUp({ setLogin, updateLogin }) {
 						>
 							Poll ID
 						</label>
-						<input id='pollId' onChange={(e) => setPollId(e.target.value)} />
+						{/* <input id='pollId' onChange={(e) => setPollId(e.target.value)} /> */}
 						<input type='button' />
 					</div>
 				</div>
@@ -83,7 +85,7 @@ function PreSignUp({ setLogin, updateLogin }) {
 	);
 }
 
-const mapStateToProps = ({}) => {
+const mapStateToProps = () => {
 	return {};
 };
 
