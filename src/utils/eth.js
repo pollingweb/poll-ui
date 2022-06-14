@@ -7,7 +7,6 @@ export const handleMetamaskTransaction = async ({
 	gas,
 	data,
 }) => {
-	console.log({ web3, nonce, to, gasPrice, gas, data });
 	try {
 		const transactionID = await window.ethereum.request({
 			method: 'eth_sendTransaction',
@@ -22,10 +21,15 @@ export const handleMetamaskTransaction = async ({
 				},
 			],
 		});
-		console.log(transactionID);
-		window.alert(
-			<a href={`https://rinkeby.etherscan.io/tx/${transactionID}`}>View Transaction Status</a>
-		);
+
+		if (transactionID) {
+			window.alert(
+				`To view transaction status go to this link => " https://rinkeby.etherscan.io/tx/${transactionID} "`
+			);
+		} else {
+			alert('Something went wrong. Please reload the page and try again.');
+			window.location.reload();
+		}
 		return transactionID;
 	} catch (err) {
 		console.error(err);

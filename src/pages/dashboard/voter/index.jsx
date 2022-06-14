@@ -3,15 +3,107 @@ import React, { useState, useEffect } from 'react';
 import { useParams } from 'react-router-dom';
 import Typography from '@mui/material/Typography';
 import Button from '@mui/material/Button';
+import Modal from '@mui/material/Modal';
+
 import { connect } from 'react-redux';
 import PollContract from '../../../smart-contract/contracts/artifacts/Poll.json';
 import { handleMetamaskTransaction } from '../../../utils/eth';
 import axios from 'axios';
 
+function CandidateModal({ open, setOpen, data }) {
+	const handleClose = () => {
+		setOpen(false);
+	};
+
+	return (
+		<div>
+			<Modal
+				open={open}
+				onClose={handleClose}
+				className=''
+				aria-labelledby='modal-modal-title'
+				aria-describedby='modal-modal-description'
+			>
+				<div className='w-full h-full justify-center items-center flex'>
+					<div className='flex justify-center items-center flex-col bg-white w-[50%] pb-4'>
+						<div className='p-8 w-full'>
+							<div className='flex w-100'>
+								<Typography variant='h6' className='flex-1'>
+									Name
+								</Typography>
+								<Typography variant='h6' className='flex-1'>
+									{data?.name}
+								</Typography>
+							</div>
+							<div className='flex w-100'>
+								<Typography variant='h6' className='flex-1'>
+									Description
+								</Typography>
+								<Typography variant='h6' className='flex-1'>
+									{data?.description}
+								</Typography>
+							</div>
+						</div>
+
+						<button onClick={handleClose}>Cancel</button>
+					</div>
+				</div>
+			</Modal>
+		</div>
+	);
+}
+
+function Candidate({ data, canVote, voteFor, polldetails }) {
+	const [open, setOpen] = useState(false);
+
+	return (
+		<div className='flex my-4 ml-[24px]' key={data.id}>
+			{open && <CandidateModal open={open} setOpen={setOpen} data={data} />}
+
+			<div className='flex-1'>
+				<div className='list-icon-primary inline-flex'>
+					{data?.name &&
+						data.name
+							.split(' ')
+							.map((e) => String(e[0]).toUpperCase())
+							.join('')}
+				</div>
+				<Typography variant='h6' className='inline align-middle ml-4'>
+					{data?.name}
+				</Typography>
+			</div>
+			<div className='flex-1 flex items-center space-x-4'>
+				<Button
+					variant='contained'
+					color='primary'
+					size='small'
+					onClick={() => setOpen(true)}
+				>
+					See Full Profile
+				</Button>
+				{/* {candidateDetails.verified && (
+				)} */}
+
+				{canVote && (
+					<Button
+						variant='contained'
+						color='primary'
+						size='small'
+						onClick={() => voteFor(polldetails.id, data.id)}
+					>
+						Click to Vote
+					</Button>
+				)}
+			</div>
+		</div>
+	);
+}
+
 function Home({ web3, walletAddress, contract }) {
 	const [polldetails, setpolldetails] = useState({});
-	const [candidateDetails, setcandidateDetails] = useState({});
-	let { pollId} = useParams();
+	// const [candidateDetails, setcandidateDetails] = useState({});
+	const [canVote, setCanVote] = useState(true);
+	let { pollId } = useParams();
 
 	// const getPollName = async (address) => {
 	// 	const contract = new web3.eth.Contract(PollContract.abi, address);
@@ -55,13 +147,32 @@ function Home({ web3, walletAddress, contract }) {
 
 	useEffect(() => {
 		async function getPollDetails() {
-			const candidateDetails=await axios.get(`${process.env.REACT_APP_API_URL ||"http://localhost:4000"}/api/voter/${walletAddress}`);
+			// const candidate = await axios.get(
+			// 	`${
+			// 		process.env.REACT_APP_API_URL || 'http://localhost:4000'
+			// 	}/api/voter/${walletAddress}`
+			// );
+
+			// if (candidate.status === 200) {
+			// 	setcandidateDetails(candidate.data);
+			// }
+
 			const pollDetails = await axios.get(
-				`${process.env.REACT_APP_API_BASEURL||"http://localhost:4000"}/api/poll/${pollId}`
+				`${process.env.REACT_APP_API_BASEURL || 'http://localhost:4000'}/api/poll/${pollId}`
 			);
 
 			if (pollDetails.status === 200) {
 				setpolldetails(pollDetails.data);
+			}
+
+			const verifyVote = await axios.get(
+				`${
+					process.env.REACT_APP_API_BASEURL || 'http://localhost:4000'
+				}/api/poll/${pollId}/voter/${walletAddress}/verify`
+			);
+
+			if (verifyVote.status === 200) {
+				setCanVote(!verifyVote.data.isVoted);
 			}
 		}
 
@@ -90,9 +201,19 @@ function Home({ web3, walletAddress, contract }) {
 				data,
 			});
 
-			console.log(transactionID);
+			if (transactionID) {
+				const updateVoteStatus = await axios.post(
+					`${
+						process.env.REACT_APP_API_URL || 'http://localhost:4000'
+					}/api/voter/${walletAddress}/poll/${to}`
+				);
+
+				if (updateVoteStatus.status === 200) {
+					setCanVote(false);
+				}
+			}
 		} catch (err) {
-			console.error(err);
+			alert(String(err.message).replace('Returned error: ', ''));
 		}
 	};
 
@@ -110,14 +231,6 @@ function Home({ web3, walletAddress, contract }) {
 					</Typography>
 					<Typography variant='h6' className='flex-1'>
 						{polldetails?.name}
-					</Typography>
-				</div>
-				<div className='flex w-100'>
-					<Typography variant='h6' className='flex-1'>
-						Poll Agenda
-					</Typography>
-					<Typography variant='h6' className='flex-1'>
-						Polling 1
 					</Typography>
 				</div>
 				<div className='flex w-100'>
@@ -146,9 +259,11 @@ function Home({ web3, walletAddress, contract }) {
 				</div>
 			</div>
 			<div className='text-center mb-4'>
-				{!candidateDetails.verified && <Button variant='contained' color='primary'>
-					Apply
-				</Button>}
+				{/* {!candidateDetails.verified && (
+					<Button variant='contained' color='primary'>
+						Apply
+					</Button>
+				)} */}
 			</div>
 
 			<div className='section-header-primary'>
@@ -157,25 +272,14 @@ function Home({ web3, walletAddress, contract }) {
 				</Typography>
 			</div>
 			<div>
-				{polldetails?.Candidates?.map((data) => (
-					<div className='flex my-4 ml-[24px]' key={data.id}>
-						<div className='flex-1'>
-							<div className='list-icon-primary inline-flex'>SD</div>
-							<Typography variant='h6' className='inline align-middle ml-4'>
-								Polling 1 - Candidate List
-							</Typography>
-						</div>
-						<div className='flex-1 flex items-center space-x-4'>
-							<Button variant='contained' color='primary' size='small'>
-								See Full Profile
-							</Button>
-							{candidateDetails.verified &&
-							<Button variant='contained' color='primary' size='small' onClick={()=>voteFor(polldetails.id,data.id)}>
-								Click to Vote
-							</Button>
-	}
-						</div>
-					</div>
+				{polldetails?.candidates?.map((data) => (
+					<Candidate
+						data={data}
+						key={data.id}
+						voteFor={voteFor}
+						polldetails={polldetails}
+						canVote={canVote}
+					/>
 				))}
 			</div>
 		</div>

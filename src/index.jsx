@@ -2,7 +2,7 @@ import React from 'react';
 import ReactDOM from 'react-dom/client';
 import App from './App';
 import './index.css';
-import { cookieInterceptor, errorInterceptor } from './utils/axios';
+import { errorInterceptor } from './utils/axios';
 
 // cookieInterceptor();
 errorInterceptor();

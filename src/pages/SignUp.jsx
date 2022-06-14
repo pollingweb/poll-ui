@@ -148,7 +148,7 @@ const SignUp = ({ walletAddress }) => {
 					</Left>
 					<Right>
 						<InputFeild
-							icon={BiHash}
+							Icon={BiHash}
 							type='text'
 							name='name'
 							placeholder='Enter your name'
@@ -156,7 +156,7 @@ const SignUp = ({ walletAddress }) => {
 							onChange={handleChange}
 						/>
 						<InputFeild
-							icon={BiEnvelope}
+							Icon={BiEnvelope}
 							type='text'
 							name='email'
 							placeholder='Enter your email'
@@ -164,7 +164,7 @@ const SignUp = ({ walletAddress }) => {
 							onChange={handleChange}
 						/>
 						<InputFeild
-							icon={BiIdCard}
+							Icon={BiIdCard}
 							type='text'
 							name='password'
 							placeholder='Enter Passwprd'
@@ -173,7 +173,7 @@ const SignUp = ({ walletAddress }) => {
 						/>
 						<div onClick={showCamera} style={{ cursor: 'pointer' }}>
 							<InputFeild
-								icon={BiCamera}
+								Icon={BiCamera}
 								type='text'
 								placeholder='Take a picture'
 								disable={true}
@@ -183,7 +183,7 @@ const SignUp = ({ walletAddress }) => {
 						{state.type === 'organizer' && (
 							<>
 								<InputFeild
-									icon={BiEnvelope}
+									Icon={BiEnvelope}
 									type='text'
 									name='address'
 									placeholder='Enter your address'
@@ -191,7 +191,7 @@ const SignUp = ({ walletAddress }) => {
 									onChange={handleChange}
 								/>
 								<InputFeild
-									icon={BiEnvelope}
+									Icon={BiEnvelope}
 									type='text'
 									name='phone'
 									placeholder='Enter your emphoneail'
@@ -200,28 +200,37 @@ const SignUp = ({ walletAddress }) => {
 								/>
 							</>
 						)}
-						<FormControl className='w-80'>
-							<RadioGroup
-								row
-								aria-labelledby='demo-row-radio-buttons-group-label'
-								name='row-radio-buttons-group'
-								value={state.type}
-								onChange={handleChangeType}
-							>
-								<FormControlLabel value='voter' control={<Radio />} label='Voter' />
-								<FormControlLabel
-									value='organizer'
-									control={<Radio />}
-									label='Organizer'
-								/>
-							</RadioGroup>
-						</FormControl>
+						<div className='m-auto w-[60%]'>
+							<FormControl className='w-80'>
+								<RadioGroup
+									row
+									aria-labelledby='demo-row-radio-buttons-group-label'
+									name='row-radio-buttons-group'
+									value={state.type}
+									onChange={handleChangeType}
+								>
+									<FormControlLabel
+										value='voter'
+										control={<Radio />}
+										label='Voter'
+										className='text-white'
+									/>
+									<FormControlLabel
+										value='organizer'
+										control={<Radio />}
+										label='Organizer'
+										className='text-white'
+									/>
+								</RadioGroup>
+							</FormControl>
+						</div>
 
 						<Button onClick={handleSubmit}>Verify Cedentials</Button>
-
-						<Link to='/login' className='text-center'>
-							Login now
-						</Link>
+						<div className='text-white text-center font-bold underline'>
+							<Link to='/login' className='text-center'>
+								Login now
+							</Link>
+						</div>
 					</Right>
 				</Main>
 

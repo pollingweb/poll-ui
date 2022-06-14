@@ -1,8 +1,7 @@
 import React, { useEffect, useState } from 'react';
+
 import Typography from '@mui/material/Typography';
 import Button from '@mui/material/Button';
-// import { AiOutlinePlusCircle } from 'react-icons/ai';
-import { FiEdit } from 'react-icons/fi';
 import Candidate from '../../../components/Candidate';
 import Voter from '../../../components/Voter';
 import PollContract from '../../../smart-contract/contracts/artifacts/Poll.json';
@@ -17,8 +16,6 @@ function Poll_detail({ web3, contract, walletAddress }) {
 	const [polldetails, setpolldetails] = useState({});
 
 	const [result, setResult] = useState({});
-
-	console.log(result);
 
 	// const getPollName = async (address) => {
 	// 	const contract = new web3.eth.Contract(PollContract.abi, address);
@@ -96,83 +93,83 @@ function Poll_detail({ web3, contract, walletAddress }) {
 		// eslint-disable-next-line react-hooks/exhaustive-deps
 	}, []);
 
-	const renamePoll = async (to, newName) => {
-		const contract = new web3.eth.Contract(PollContract.abi, to);
+	// const renamePoll = async (to, newName) => {
+	// 	const contract = new web3.eth.Contract(PollContract.abi, to);
 
-		try {
-			const tx = contract.methods.renamePoll(newName);
-			const gas = await tx.estimateGas({ from: walletAddress });
-			const gasPrice = await web3.eth.getGasPrice();
-			const data = tx.encodeABI();
-			const nonce = await web3.eth.getTransactionCount(walletAddress);
+	// 	try {
+	// 		const tx = contract.methods.renamePoll(newName);
+	// 		const gas = await tx.estimateGas({ from: walletAddress });
+	// 		const gasPrice = await web3.eth.getGasPrice();
+	// 		const data = tx.encodeABI();
+	// 		const nonce = await web3.eth.getTransactionCount(walletAddress);
 
-			const transactionID = await handleMetamaskTransaction({
-				web3,
-				walletAddress,
-				nonce,
-				to,
-				gasPrice,
-				gas,
-				data,
-			});
+	// 		const transactionID = await handleMetamaskTransaction({
+	// 			web3,
+	// 			walletAddress,
+	// 			nonce,
+	// 			to,
+	// 			gasPrice,
+	// 			gas,
+	// 			data,
+	// 		});
 
-			console.log(transactionID);
-		} catch (err) {
-			console.error(err);
-		}
-	};
+	// 		console.log(transactionID);
+	// 	} catch (err) {
+	// 		console.error(err);
+	// 	}
+	// };
 
-	const increasePollDuration = async (to, extendedBlocks) => {
-		const contract = new web3.eth.Contract(PollContract.abi, to);
+	// const increasePollDuration = async (to, extendedBlocks) => {
+	// 	const contract = new web3.eth.Contract(PollContract.abi, to);
 
-		try {
-			const tx = contract.methods.increasePollDuration(extendedBlocks);
-			const gas = await tx.estimateGas({ from: walletAddress });
-			const gasPrice = await web3.eth.getGasPrice();
-			const data = tx.encodeABI();
-			const nonce = await web3.eth.getTransactionCount(walletAddress);
+	// 	try {
+	// 		const tx = contract.methods.increasePollDuration(extendedBlocks);
+	// 		const gas = await tx.estimateGas({ from: walletAddress });
+	// 		const gasPrice = await web3.eth.getGasPrice();
+	// 		const data = tx.encodeABI();
+	// 		const nonce = await web3.eth.getTransactionCount(walletAddress);
 
-			const transactionID = await handleMetamaskTransaction({
-				web3,
-				walletAddress,
-				nonce,
-				to,
-				gasPrice,
-				gas,
-				data,
-			});
+	// 		const transactionID = await handleMetamaskTransaction({
+	// 			web3,
+	// 			walletAddress,
+	// 			nonce,
+	// 			to,
+	// 			gasPrice,
+	// 			gas,
+	// 			data,
+	// 		});
 
-			console.log(transactionID);
-		} catch (err) {
-			console.error(err);
-		}
-	};
+	// 		console.log(transactionID);
+	// 	} catch (err) {
+	// 		console.error(err);
+	// 	}
+	// };
 
-	const cancelPoll = async (to) => {
-		const contract = new web3.eth.Contract(PollContract.abi, to);
+	// const cancelPoll = async (to) => {
+	// 	const contract = new web3.eth.Contract(PollContract.abi, to);
 
-		try {
-			const tx = contract.methods.cancelPoll();
-			const gas = await tx.estimateGas({ from: walletAddress });
-			const gasPrice = await web3.eth.getGasPrice();
-			const data = tx.encodeABI();
-			const nonce = await web3.eth.getTransactionCount(walletAddress);
+	// 	try {
+	// 		const tx = contract.methods.cancelPoll();
+	// 		const gas = await tx.estimateGas({ from: walletAddress });
+	// 		const gasPrice = await web3.eth.getGasPrice();
+	// 		const data = tx.encodeABI();
+	// 		const nonce = await web3.eth.getTransactionCount(walletAddress);
 
-			const transactionID = await handleMetamaskTransaction({
-				web3,
-				walletAddress,
-				nonce,
-				to,
-				gasPrice,
-				gas,
-				data,
-			});
+	// 		const transactionID = await handleMetamaskTransaction({
+	// 			web3,
+	// 			walletAddress,
+	// 			nonce,
+	// 			to,
+	// 			gasPrice,
+	// 			gas,
+	// 			data,
+	// 		});
 
-			console.log(transactionID);
-		} catch (err) {
-			console.error(err);
-		}
-	};
+	// 		console.log(transactionID);
+	// 	} catch (err) {
+	// 		console.error(err);
+	// 	}
+	// };
 
 	const endPoll = async (to) => {
 		const contract = new web3.eth.Contract(PollContract.abi, to);
@@ -194,7 +191,21 @@ function Poll_detail({ web3, contract, walletAddress }) {
 				data,
 			});
 
-			console.log(transactionID);
+			if (transactionID) {
+				const res = await axios.put(
+					`${process.env.REACT_APP_API_BASEURL}/api/poll/${pollId}`,
+					{
+						status: 'Ended',
+					}
+				);
+
+				if (res.status === 200) {
+					alert(res.data.message);
+					setpolldetails((pre) => ({ ...pre, status: 'Ended' }));
+				} else {
+					window.location.reload();
+				}
+			}
 		} catch (err) {
 			console.error(err);
 		}
@@ -207,9 +218,6 @@ function Poll_detail({ web3, contract, walletAddress }) {
 					<Typography variant='h4' fontSize='28px'>
 						Polling Detail
 					</Typography>
-				</div>
-				<div>
-					<FiEdit className='h-6 w-6' />
 				</div>
 			</div>
 			<div className='p-8'>
@@ -257,7 +265,12 @@ function Poll_detail({ web3, contract, walletAddress }) {
 
 			{polldetails?.status === 'Running' && (
 				<div className='text-center mb-4'>
-					<Button variant='contained' color='primary' className='bg-red-500'>
+					<Button
+						variant='contained'
+						color='primary'
+						className='bg-red-500'
+						onClick={() => endPoll(polldetails.id)}
+					>
 						End Poll
 					</Button>
 				</div>
@@ -307,9 +320,5 @@ const mapStateToProps = ({ auth }) => {
 		web3: auth.web3,
 	};
 };
-
-// const mapDispatchToProps = (dispatch) => {
-// 	return {};
-// };
 
 export default connect(mapStateToProps)(Poll_detail);

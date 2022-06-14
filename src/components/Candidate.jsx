@@ -47,7 +47,6 @@ function CandidateModal({ open, setOpen, data }) {
 }
 
 function Candidate({ data, user, vote }) {
-	console.log('vote', vote, data.id);
 	const [open, setOpen] = useState(false);
 
 	return (

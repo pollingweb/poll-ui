@@ -1,42 +1,15 @@
-import React, { memo, FunctionComponent } from 'react';
-import PropTypes from 'prop-types';
+import React, { memo } from 'react';
 
 import Box from '@mui/material/Box';
 import Drawer from '@mui/material/Drawer';
-import List from '@mui/material/List';
-import ListItem from '@mui/material/ListItem';
-import ListItemIcon from '@mui/material/ListItemIcon';
-import ListItemText from '@mui/material/ListItemText';
-import Typography from '@mui/material/Typography';
-import classname from 'classnames';
 import Divider from '@mui/material/Divider';
 import Button from '@mui/material/Button';
 
 import { AiFillHome } from 'react-icons/ai';
-import { RiArrowRightSLine } from 'react-icons/ri';
-import { FaUserCircle } from 'react-icons/fa';
 
-import { NavLink } from 'react-router-dom';
-
-type SidebarProps = {
-	mobileOpen: boolean;
-	setMobileOpen: React.Dispatch<React.SetStateAction<boolean>>;
-};
-
-// const useStyles = makeStyles((theme: any) => ({
-// 	root: {
-// 		backgroundColor: '#E6E9F1',
-// 		color: '#25468A',
-// 		borderRight: '0',
-// 		[theme.breakpoints.up('sm')]: {
-// 			top: '64px',
-// 		},
-// 	},
-// }));
-
-function Sidebar({ mobileOpen, setMobileOpen }: SidebarProps) {
+function Sidebar({ mobileOpen, setMobileOpen }) {
 	const handleDrawerToggle = () => {
-		setMobileOpen((pre: boolean) => !pre);
+		setMobileOpen((pre) => !pre);
 	};
 
 	return (
@@ -86,7 +59,7 @@ function Sidebar({ mobileOpen, setMobileOpen }: SidebarProps) {
 					>
 						Digital Ballot
 					</Button>
-					<Button
+					{/* <Button
 						variant='contained'
 						color='secondary'
 						fullWidth
@@ -94,7 +67,7 @@ function Sidebar({ mobileOpen, setMobileOpen }: SidebarProps) {
 						endIcon={<RiArrowRightSLine />}
 					>
 						Profile
-					</Button>
+					</Button> */}
 				</div>
 				<Divider />
 			</Drawer>

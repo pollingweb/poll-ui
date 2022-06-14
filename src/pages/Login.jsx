@@ -153,7 +153,7 @@ const Login = ({ updateLogin }) => {
 					</Left>
 					<Right>
 						<InputFeild
-							icon={BiEnvelope}
+							Icon={BiEnvelope}
 							type='text'
 							name='email'
 							placeholder='Enter your email'
@@ -161,34 +161,44 @@ const Login = ({ updateLogin }) => {
 							onChange={handleChange}
 						/>
 						<InputFeild
-							icon={BiIdCard}
+							Icon={BiIdCard}
 							type='password'
 							name='password'
 							placeholder='Enter Password'
 							value={state.password}
 							onChange={handleChange}
 						/>
-						<FormControl className='w-80'>
-							<RadioGroup
-								row
-								aria-labelledby='demo-row-radio-buttons-group-label'
-								name='row-radio-buttons-group'
-								value={state.type}
-								onChange={handleChangeType}
-							>
-								<FormControlLabel value='voter' control={<Radio />} label='Voter' />
-								<FormControlLabel
-									value='organizer'
-									control={<Radio />}
-									label='Organizer'
-								/>
-							</RadioGroup>
-						</FormControl>
+						<div className='m-auto w-[60%]'>
+							<FormControl>
+								<RadioGroup
+									row
+									aria-labelledby='demo-row-radio-buttons-group-label'
+									name='row-radio-buttons-group'
+									value={state.type}
+									onChange={handleChangeType}
+								>
+									<FormControlLabel
+										value='voter'
+										control={<Radio />}
+										label='Voter'
+										className='text-white'
+									/>
+									<FormControlLabel
+										value='organizer'
+										control={<Radio />}
+										label='Organizer'
+										className='text-white'
+									/>
+								</RadioGroup>
+							</FormControl>
+						</div>
 						<Button onClick={handleSubmit}>Verify Cedentials</Button>
 
-						<Link to='/sign-up' className='text-center'>
-							Sign up now
-						</Link>
+						<div className='text-white text-center font-bold underline'>
+							<Link to='/sign-up' className='text-center'>
+								Sign up now
+							</Link>
+						</div>
 					</Right>
 				</Main>
 			</SignUpContainer>
