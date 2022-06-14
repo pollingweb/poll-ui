@@ -2,12 +2,15 @@ import React from 'react';
 import ReactDOM from 'react-dom/client';
 import App from './App';
 import './index.css';
-import SignUp from './pages/SignUp';
+import { cookieInterceptor, errorInterceptor } from './utils/axios';
+
+// cookieInterceptor();
+errorInterceptor();
 
 const root = ReactDOM.createRoot(document.getElementById('root'));
 
 root.render(
 	<React.StrictMode>
-		<SignUp component={App} />
+		<App />
 	</React.StrictMode>
 );

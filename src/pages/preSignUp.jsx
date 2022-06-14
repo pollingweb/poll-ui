@@ -7,10 +7,12 @@ import Modal from '@mui/material/Modal';
 
 import { connect } from 'react-redux';
 import { setAuth, updateAuth } from '../store/features/auth';
+import { useNavigate } from 'react-router-dom';
 
 const web3 = new Web3('https://rinkeby.infura.io/v3/2c6b7e477a774f919361c4f491d4ffcd');
 
 function PreSignUp({ setLogin, updateLogin }) {
+	const navigate = useNavigate();
 	const [loading, setLoading] = React.useState(true);
 	const [pollId, setPollId] = React.useState('');
 	const [open, setOpen] = React.useState(false);
@@ -37,6 +39,7 @@ function PreSignUp({ setLogin, updateLogin }) {
 				'0xe07eB21048a121fA55B6d9ED9715164958d8Bd6D'
 			);
 			updateLogin('contract', contract);
+			navigate('/login', { replace: true });
 		} else {
 			window.alert('Install Metamask');
 		}

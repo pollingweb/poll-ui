@@ -1,10 +1,9 @@
-import { useState } from 'react';
 import { SignUpContainer } from '../components/styles/SignUpContainer.styled';
 import styled from 'styled-components';
 import pic from '../images/sign-up.svg';
-import { BiEnvelope, BiHash, BiIdCard, BiCamera } from 'react-icons/bi';
+import { BiEnvelope, BiIdCard } from 'react-icons/bi';
 import InputFeild from '../components/styles/InputFeild.styled';
-import Camera from '../components/Camera';
+import { useState } from 'react';
 
 import Radio from '@mui/material/Radio';
 import RadioGroup from '@mui/material/RadioGroup';
@@ -13,7 +12,10 @@ import FormControl from '@mui/material/FormControl';
 
 import axios from 'axios';
 import { Link, useNavigate } from 'react-router-dom';
+
 import { connect } from 'react-redux';
+import { updateAuth } from '../store/features/auth';
+import Loader from '../components/Loader';
 
 // background-color : ${({ theme }) => theme.color.blur};
 const Main = styled.div`
@@ -89,32 +91,35 @@ const Button = styled.button`
 	}
 `;
 
-const SignUp = ({ walletAddress }) => {
+const Login = ({ updateLogin }) => {
 	const navigate = useNavigate();
-	const [camera, setCamera] = useState(false);
+	const [loading, setloading] = useState(false);
 	const [state, setState] = useState({
-		name: '',
-		verfied: false,
-		photoUrl: 'www.g.com',
-		password: '',
 		email: '',
+		password: '',
 		type: 'voter',
-		address: '',
-		phone: '',
 	});
 
-	const showCamera = () => {
-		setCamera(true);
-	};
-
 	const handleSubmit = async () => {
-		const res = await axios.post(`${process.env.REACT_APP_API_BASEURL}/api/${state.type}`, {
-			...state,
-			id: walletAddress,
-		});
+		setloading(true);
+		const res = await axios.post(
+			`${process.env.REACT_APP_API_BASEURL}/api/${state.type}/login`,
+			state
+		);
+
+		setloading(false);
 
 		if (res.status === 200) {
-			navigate('/login', { replace: true });
+			updateLogin('userType', state.type);
+			navigate(
+				state.type === 'voter'
+					? `/dashboard/${state.type}`
+					: `/dashboard/${state.type}/polls`,
+				{ replace: true }
+			);
+		} else {
+			console.log(res.data);
+			alert(res?.data?.error);
 		}
 	};
 
@@ -136,9 +141,9 @@ const SignUp = ({ walletAddress }) => {
 			type: event.target.value,
 		}));
 	};
-
 	return (
 		<>
+			{loading && <Loader />}
 			<SignUpContainer>
 				<Main>
 					<Left>
@@ -147,14 +152,6 @@ const SignUp = ({ walletAddress }) => {
 						<img src={pic} alt='img-logo' />
 					</Left>
 					<Right>
-						<InputFeild
-							icon={BiHash}
-							type='text'
-							name='name'
-							placeholder='Enter your name'
-							value={state.name}
-							onChange={handleChange}
-						/>
 						<InputFeild
 							icon={BiEnvelope}
 							type='text'
@@ -165,41 +162,12 @@ const SignUp = ({ walletAddress }) => {
 						/>
 						<InputFeild
 							icon={BiIdCard}
-							type='text'
+							type='password'
 							name='password'
-							placeholder='Enter Passwprd'
+							placeholder='Enter Password'
 							value={state.password}
 							onChange={handleChange}
 						/>
-						<div onClick={showCamera} style={{ cursor: 'pointer' }}>
-							<InputFeild
-								icon={BiCamera}
-								type='text'
-								placeholder='Take a picture'
-								disable={true}
-							/>
-						</div>
-
-						{state.type === 'organizer' && (
-							<>
-								<InputFeild
-									icon={BiEnvelope}
-									type='text'
-									name='address'
-									placeholder='Enter your address'
-									value={state.address}
-									onChange={handleChange}
-								/>
-								<InputFeild
-									icon={BiEnvelope}
-									type='text'
-									name='phone'
-									placeholder='Enter your emphoneail'
-									value={state.phone}
-									onChange={handleChange}
-								/>
-							</>
-						)}
 						<FormControl className='w-80'>
 							<RadioGroup
 								row
@@ -216,16 +184,13 @@ const SignUp = ({ walletAddress }) => {
 								/>
 							</RadioGroup>
 						</FormControl>
-
 						<Button onClick={handleSubmit}>Verify Cedentials</Button>
 
-						<Link to='/login' className='text-center'>
-							Login now
+						<Link to='/sign-up' className='text-center'>
+							Sign up now
 						</Link>
 					</Right>
 				</Main>
-
-				{camera && <Camera hide={() => setCamera(false)} />}
 			</SignUpContainer>
 		</>
 	);
@@ -237,4 +202,10 @@ const mapStateToProps = ({ auth }) => {
 	};
 };
 
-export default connect(mapStateToProps)(SignUp);
+const mapDispatchToProps = (dispatch) => {
+	return {
+		updateLogin: (key, value) => dispatch(updateAuth({ key, value })),
+	};
+};
+
+export default connect(mapStateToProps, mapDispatchToProps)(Login);

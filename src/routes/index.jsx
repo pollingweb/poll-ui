@@ -2,9 +2,11 @@ import React, { lazy, Suspense } from 'react';
 import { Route, Routes } from 'react-router-dom';
 
 const Layouts = lazy(() => import(/* webpackChunkName: "SignUp" */ '../layouts'));
+const LoginLayouts = lazy(() => import(/* webpackChunkName: "SignUp" */ '../layouts/loginLaylout'));
 
 // user rotes
 const SignUp = lazy(() => import(/* webpackChunkName: "SignUp" */ '../pages/SignUp'));
+const Login = lazy(() => import(/* webpackChunkName: "SignUp" */ '../pages/Login'));
 const VDashboardHome = lazy(() =>
 	import(/* webpackChunkName: "DashboardHome" */ '../pages/dashboard/voter/index')
 );
@@ -41,10 +43,9 @@ function WebRoutes() {
 		<Suspense fallback={<div className='loading' />}>
 			<Routes>
 				<Route index element={<PreSignUp />} />
-				<Route path='/sign-up' element={<SignUp />} />
 
 				<Route path='dashboard/voter' element={<Layouts />}>
-					{/* <Route index element={<VDashboardHome />} /> */}
+					<Route index element={<VPollList />} />
 					<Route path='candidate-details' element={<VCandidateDetails />} />
 					<Route path='polls' element={<VPollList />} />
 					<Route path='polls/:pollId' element={<VDashboardHome />} />
@@ -55,6 +56,11 @@ function WebRoutes() {
 					<Route path='polls' element={<OPollList />} />
 					<Route path='polls/:pollId' element={<OOrganizerPollDetail />} />
 					<Route path='polls/create' element={<NewPoll />} />
+				</Route>
+
+				<Route element={<LoginLayouts />}>
+					<Route path='/sign-up' element={<SignUp />} />
+					<Route path='/login' element={<Login />} />
 				</Route>
 			</Routes>
 		</Suspense>

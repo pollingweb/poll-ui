@@ -23,7 +23,7 @@ import { handleMetamaskTransaction } from '../../../utils/eth';
 // import axios from "axios";
 
 function NewPoll({ web3, walletAddress, contract }) {
-	const navigate=useNavigate();
+	const navigate = useNavigate();
 	const [poll, setPoll] = useState({
 		pollId: '',
 		name: '',
@@ -111,51 +111,51 @@ function NewPoll({ web3, walletAddress, contract }) {
 		});
 	};
 
-	const removeCandidate = (candidate_id) => {
-		setCandidateList(
-			candidateList.filter((candidate) => candidate.candidate_id !== candidate_id)
-		);
-	};
+	// const removeCandidate = (candidate_id) => {
+	// 	setCandidateList(
+	// 		candidateList.filter((candidate) => candidate.candidate_id !== candidate_id)
+	// 	);
+	// };
 
 	const addVoter = () => {
 		let form = new FormData();
 		setVoterList([...voterList, newVoter]);
 		setOpenVoterForm(false);
 	};
-	const removeVoter = (voter_id) => {
-		setVoterList(voterList.filter((voter) => voter.voter_id !== voter_id));
-	};
-	const addToBlockchain = async () => {
-		let form = new FormData();
-		form.append('pollName', poll.name);
-		form.append('blockNumber', '0');
-		form.append(
-			'candidateIds',
-			JSON.stringify(candidateList.map((candidate) => candidate.candidate_id))
-		);
-		form.append('pollType', poll.type);
-		let response = await fetch('http://localhost:5000/api/poll/addToBlockchain', {
-			method: 'POST',
-			body: form,
-		});
-		let data = await response.json();
-		//add pollId to all candidates and voters
-		setCandidateList(
-			candidateList.map((candidate) => {
-				candidate.pollId = data.pollId;
-				return candidate;
-			})
-		);
-		setVoterList(
-			voterList.map((voter) => {
-				voter.pollId = data.pollId;
-				return voter;
-			})
-		);
-	};
-	const saveToDatabase = async () => {
-		let form = new FormData();
-	};
+	// const removeVoter = (voter_id) => {
+	// 	setVoterList(voterList.filter((voter) => voter.voter_id !== voter_id));
+	// };
+	// const addToBlockchain = async () => {
+	// 	let form = new FormData();
+	// 	form.append('pollName', poll.name);
+	// 	form.append('blockNumber', '0');
+	// 	form.append(
+	// 		'candidateIds',
+	// 		JSON.stringify(candidateList.map((candidate) => candidate.candidate_id))
+	// 	);
+	// 	form.append('pollType', poll.type);
+	// 	let response = await fetch('http://localhost:5000/api/poll/addToBlockchain', {
+	// 		method: 'POST',
+	// 		body: form,
+	// 	});
+	// 	let data = await response.json();
+	// 	//add pollId to all candidates and voters
+	// 	setCandidateList(
+	// 		candidateList.map((candidate) => {
+	// 			candidate.pollId = data.pollId;
+	// 			return candidate;
+	// 		})
+	// 	);
+	// 	setVoterList(
+	// 		voterList.map((voter) => {
+	// 			voter.pollId = data.pollId;
+	// 			return voter;
+	// 		})
+	// 	);
+	// };
+	// const saveToDatabase = async () => {
+	// 	let form = new FormData();
+	// };
 
 	const updatePollToDb = async (pollId) => {
 		try {
@@ -163,11 +163,11 @@ function NewPoll({ web3, walletAddress, contract }) {
 				id: pollId,
 				name: poll.name,
 				description: poll.description,
-				status: 'Created',
+				status: 'Running',
 				startDate: poll.startTime,
 				endDate: poll.endTime,
 				pollType: poll.type,
-				OrganiserId: walletAddress,
+				organizerId: walletAddress,
 			});
 
 			if (res.status !== 200) return;
@@ -176,7 +176,7 @@ function NewPoll({ web3, walletAddress, contract }) {
 				await axios.post(process.env.REACT_APP_API_BASEURL + '/api/candidate', {
 					id: uuidv4(),
 					name: candidateList[i].name,
-					PollId: pollId,
+					pollId: pollId,
 					imageUrl: 'www.google.com',
 					voteCount: 0,
 					description: candidateList[i].description,
@@ -193,7 +193,7 @@ function NewPoll({ web3, walletAddress, contract }) {
 					PollId: pollId,
 				});
 			}
-			navigate(-1,{replace:true});
+			navigate(-1, { replace: true });
 		} catch (error) {}
 
 		setloading(false);
@@ -201,8 +201,7 @@ function NewPoll({ web3, walletAddress, contract }) {
 
 	const createPoll = async () => {
 		setloading(true);
-		updatePollToDb('0x55DE57dce5f1b6076f670b606D5BF24a339f6471');
-		return;
+
 		const endTime = new Date(poll.endTime).getTime() / 1000;
 		const startTime = Date.now() / 1000;
 		const blockNumber = Math.ceil((endTime - startTime) / 17);
