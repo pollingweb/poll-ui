@@ -23,7 +23,7 @@ import { handleMetamaskTransaction } from '../../../utils/eth';
 // import axios from "axios";
 
 function NewPoll({ web3, walletAddress, contract }) {
-	const navigate=useNavigate();
+	const navigate = useNavigate();
 	const [poll, setPoll] = useState({
 		pollId: '',
 		name: '',
@@ -193,7 +193,7 @@ function NewPoll({ web3, walletAddress, contract }) {
 					PollId: pollId,
 				});
 			}
-			navigate(-1,{replace:true});
+			navigate(-1, { replace: true });
 		} catch (error) {}
 
 		setloading(false);
@@ -201,8 +201,7 @@ function NewPoll({ web3, walletAddress, contract }) {
 
 	const createPoll = async () => {
 		setloading(true);
-		updatePollToDb('0x55DE57dce5f1b6076f670b606D5BF24a339f6471');
-		return;
+
 		const endTime = new Date(poll.endTime).getTime() / 1000;
 		const startTime = Date.now() / 1000;
 		const blockNumber = Math.ceil((endTime - startTime) / 17);
