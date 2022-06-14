@@ -10,11 +10,9 @@ import Radio from '@mui/material/Radio';
 import RadioGroup from '@mui/material/RadioGroup';
 import FormControlLabel from '@mui/material/FormControlLabel';
 import FormControl from '@mui/material/FormControl';
-import FormLabel from '@mui/material/FormLabel';
 
 import axios from 'axios';
 import { Link, useNavigate } from 'react-router-dom';
-import { v4 as uuidv4 } from 'uuid';
 import { connect } from 'react-redux';
 
 // background-color : ${({ theme }) => theme.color.blur};
@@ -101,6 +99,8 @@ const SignUp = ({ walletAddress }) => {
 		password: '',
 		email: '',
 		type: 'voter',
+		address: '',
+		phone: '',
 	});
 
 	const showCamera = () => {
@@ -180,8 +180,27 @@ const SignUp = ({ walletAddress }) => {
 							/>
 						</div>
 
+						{state.type === 'organizer' && (
+							<>
+								<InputFeild
+									icon={BiEnvelope}
+									type='text'
+									name='address'
+									placeholder='Enter your address'
+									value={state.address}
+									onChange={handleChange}
+								/>
+								<InputFeild
+									icon={BiEnvelope}
+									type='text'
+									name='phone'
+									placeholder='Enter your emphoneail'
+									value={state.phone}
+									onChange={handleChange}
+								/>
+							</>
+						)}
 						<FormControl className='w-80'>
-							<FormLabel id='demo-row-radio-buttons-group-label'>Gender</FormLabel>
 							<RadioGroup
 								row
 								aria-labelledby='demo-row-radio-buttons-group-label'
@@ -197,6 +216,7 @@ const SignUp = ({ walletAddress }) => {
 								/>
 							</RadioGroup>
 						</FormControl>
+
 						<Button onClick={handleSubmit}>Verify Cedentials</Button>
 
 						<Link to='/login' className='text-center'>

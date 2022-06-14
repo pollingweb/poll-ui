@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import Typography from '@mui/material/Typography';
 import Button from '@mui/material/Button';
-import { AiOutlinePlusCircle } from 'react-icons/ai';
+// import { AiOutlinePlusCircle } from 'react-icons/ai';
 import { FiEdit } from 'react-icons/fi';
 import Candidate from '../../../components/Candidate';
 import Voter from '../../../components/Voter';
@@ -17,6 +17,8 @@ function Poll_detail({ web3, contract, walletAddress }) {
 	const [polldetails, setpolldetails] = useState({});
 
 	const [result, setResult] = useState({});
+
+	console.log(result);
 
 	// const getPollName = async (address) => {
 	// 	const contract = new web3.eth.Contract(PollContract.abi, address);
@@ -64,7 +66,10 @@ function Poll_detail({ web3, contract, walletAddress }) {
 			const resultOf = await contract.methods
 				.getResultOf(candidateID)
 				.call({ from: walletAddress });
-			setResult((pre) => ({ ...pre, candidateID: resultOf }));
+
+			if (resultOf) {
+				setResult((pre) => ({ ...pre, [candidateID]: resultOf }));
+			}
 		} catch (err) {
 			console.error(err);
 		}
@@ -79,7 +84,7 @@ function Poll_detail({ web3, contract, walletAddress }) {
 			if (pollDetails.status === 200) {
 				setpolldetails(pollDetails.data);
 
-				pollDetails.data.Candidates.map(({ id }) => {
+				pollDetails.data.candidates.map(({ id }) => {
 					getResultOf(pollId, id);
 					return true;
 				});
@@ -249,41 +254,46 @@ function Poll_detail({ web3, contract, walletAddress }) {
 					</Typography>
 				</div>
 			</div>
-			<div className='text-center mb-4'>
-				<Button variant='contained' color='primary' className='bg-red-500'>
-					End Poll
-				</Button>
-			</div>
+
+			{polldetails?.status === 'Running' && (
+				<div className='text-center mb-4'>
+					<Button variant='contained' color='primary' className='bg-red-500'>
+						End Poll
+					</Button>
+				</div>
+			)}
 
 			<div className='section-header-primary  flex items-center justify-between'>
 				<div>
 					<Typography variant='h4' fontSize='28px'>
-						Polling 1 - Candidate List
+						Polling - Candidate List
 					</Typography>
 				</div>
-				<div className='flex'>
+				{/* <div className='flex'>
 					<FiEdit className='h-6 w-6 mr-3' />
 					<AiOutlinePlusCircle className='h-6 w-6' />
-				</div>
+				</div> */}
 			</div>
 			<div>
-				{polldetails.Candidates?.map((data) => (
-					<Candidate user='organizer' editMode={false} data={data} key={data.id} />
+				{polldetails.candidates?.map((data) => (
+					<Candidate
+						user='organizer'
+						editMode={false}
+						data={data}
+						key={data.id}
+						vote={result[data.id]}
+					/>
 				))}
 			</div>
 			<div className='section-header-primary  flex items-center justify-between'>
 				<div>
 					<Typography variant='h4' fontSize='28px'>
-						Pollling 1-Voter's List
+						Pollling -Voter's List
 					</Typography>
-				</div>
-				<div className='flex'>
-					<FiEdit className='h-6 w-6 mr-3' />
-					<AiOutlinePlusCircle className='h-6 w-6' />
 				</div>
 			</div>
 
-			{polldetails.Voters?.map((data) => (
+			{polldetails.voters?.map((data) => (
 				<Voter editMode={false} data={data} key={data.id} />
 			))}
 		</div>

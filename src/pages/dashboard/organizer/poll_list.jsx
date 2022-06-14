@@ -11,7 +11,7 @@ import axios from 'axios';
 
 function Poll_list({ contract, walletAddress }) {
 	const [pollList, setPollList] = useState([]);
-	const [pollListDetails, setpollListDetails] = useState([]);
+	const [pollListDetails, setpollListDetails] = useState({});
 
 	useEffect(() => {
 		const getPreviousPolls = async () => {
@@ -27,7 +27,9 @@ function Poll_list({ contract, walletAddress }) {
 						`${process.env.REACT_APP_API_BASEURL}/api/poll/${item}`
 					);
 
-					setpollListDetails((prev) => [...prev, pollDetails.data]);
+					if (pollDetails?.data) {
+						setpollListDetails((prev) => ({ ...prev, [item]: pollDetails.data }));
+					}
 				});
 			} catch (err) {
 				console.error(err);
@@ -56,9 +58,9 @@ function Poll_list({ contract, walletAddress }) {
 					</button>
 				</Link>
 			</div>
-			{pollList.map((e) => (
-				<Poll data={e} />
-			))}
+			{pollList.map((e) =>
+				pollListDetails[e] ? <Poll data={e} details={pollListDetails[e] || {}} /> : <></>
+			)}
 		</>
 	);
 }

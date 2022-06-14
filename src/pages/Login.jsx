@@ -9,7 +9,6 @@ import Radio from '@mui/material/Radio';
 import RadioGroup from '@mui/material/RadioGroup';
 import FormControlLabel from '@mui/material/FormControlLabel';
 import FormControl from '@mui/material/FormControl';
-import FormLabel from '@mui/material/FormLabel';
 
 import axios from 'axios';
 import { Link, useNavigate } from 'react-router-dom';
@@ -112,7 +111,12 @@ const Login = ({ updateLogin }) => {
 
 		if (res.status === 200) {
 			updateLogin('userType', state.type);
-			navigate(`/dashboard/${state.type}`, { replace: true });
+			navigate(
+				state.type === 'voter'
+					? `/dashboard/${state.type}`
+					: `/dashboard/${state.type}/polls`,
+				{ replace: true }
+			);
 		} else {
 			console.log(res.data);
 			alert(res?.data?.error);
@@ -165,7 +169,6 @@ const Login = ({ updateLogin }) => {
 							onChange={handleChange}
 						/>
 						<FormControl className='w-80'>
-							<FormLabel id='demo-row-radio-buttons-group-label'>Gender</FormLabel>
 							<RadioGroup
 								row
 								aria-labelledby='demo-row-radio-buttons-group-label'
